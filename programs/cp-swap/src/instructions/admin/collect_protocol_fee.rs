@@ -27,7 +27,7 @@ pub struct CollectProtocolFee<'info> {
     pub pool_state: AccountLoader<'info, PoolState>,
 
     /// Amm config account stores owner
-    #[account(address = pool_state.load()?.amm_config)]
+    #[account(constraint = amm_config.key() == pool_state.load()?.amm_config.key())]
     pub amm_config: Account<'info, AmmConfig>,
 
     /// The address that holds pool tokens for token_0
@@ -46,13 +46,13 @@ pub struct CollectProtocolFee<'info> {
 
     /// The mint of token_0 vault
     #[account(
-        address = token_0_vault.mint
+      constraint = vault_0_mint.key() == token_0_vault.mint.key()
     )]
     pub vault_0_mint: Box<InterfaceAccount<'info, Mint>>,
 
     /// The mint of token_1 vault
     #[account(
-        address = token_1_vault.mint
+      constraint = vault_1_mint.key() == token_1_vault.mint.key()
     )]
     pub vault_1_mint: Box<InterfaceAccount<'info, Mint>>,
 

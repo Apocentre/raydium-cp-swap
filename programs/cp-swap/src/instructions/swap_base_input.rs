@@ -22,7 +22,7 @@ pub struct Swap<'info> {
     pub authority: UncheckedAccount<'info>,
 
     /// The factory state to read protocol fees
-    #[account(address = pool_state.load()?.amm_config)]
+    #[account(constraint = amm_config.key() == pool_state.load()?.amm_config.key())]
     pub amm_config: Box<Account<'info, AmmConfig>>,
 
     /// The program account of the pool in which the swap will be performed
@@ -59,17 +59,17 @@ pub struct Swap<'info> {
 
     /// The mint of input token
     #[account(
-        address = input_vault.mint
+      constraint = input_token_mint.key() == input_vault.mint.key()
     )]
     pub input_token_mint: Box<InterfaceAccount<'info, Mint>>,
 
     /// The mint of output token
     #[account(
-        address = output_vault.mint
+      constraint = output_token_mint.key() == output_vault.mint.key()
     )]
     pub output_token_mint: Box<InterfaceAccount<'info, Mint>>,
     /// The program account for the most recent oracle observation
-    #[account(mut, address = pool_state.load()?.observation_key)]
+    #[account(mut, constraint = observation_state.key() == pool_state.load()?.observation_key.key())]
     pub observation_state: AccountLoader<'info, ObservationState>,
 }
 
